@@ -52,13 +52,16 @@ def category(request,pk):
 	post_list = Post.objects.filter(category=cate).order_by('-create_time')
 	return render(request,'blog/index.html',context={'post_list':post_list})
 
-
 class IndexView(ListView):
 	model = Post
 	template_name = 'blog/index.html'
 	context_object_name = 'post_list'
 	## 指定 paginate_by 开启分页功能
 	paginate_by = 10
+
+	## 重写get_queryset 对post_list排序
+	def get_queryset(self):
+		return super(IndexView,self).get_queryset().order_by('-create_time')
 
 	def get_context_data(self,**kwargs):
 		"""
@@ -79,7 +82,7 @@ class IndexView(ListView):
 		# 调用自己写的pagination_data方法获得分页导航条需要的数据
 		pagination_data = self.pagination_data(paginator,page,is_paginated)
 
-		# 将分页导航页的模板变量更新到context中，注意pagination——data 方法返回的也是一个字典
+		# 将分页导航页的模板变量更新到context中，注意pagination_data 方法返回的也是一个字典
 		context.update(pagination_data)
 
 		# 将更新后的context返回，以便ListView 使用这个变量
@@ -183,7 +186,7 @@ class CategoryView(ListView):
 
 	def get_queryset(self):
 		cate = get_object_or_404(Category,pk=self.kwargs.get('pk'))
-		return super(CategoryView,self).get_queryset().filter(category=cate)
+		return super(CategoryView,self).get_queryset().filter(category=cate).order_by('-create_time')
 
 
 class ArchivesView(ListView):
