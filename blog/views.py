@@ -52,12 +52,11 @@ def category(request,pk):
 	post_list = Post.objects.filter(category=cate).order_by('-create_time')
 	return render(request,'blog/index.html',context={'post_list':post_list})
 
-def MobileNetImage(request):
-	return render(request,'FER/src/MobileNetImage.html')
-def MobileNetWebcam(request):
-	return render(request,'FER/src/MobileNetWebcam.html')
-def TinyFaceDetectWebcam(request):
-	return render(request,'FER/src/TinyFaceDetectWebcam.html')
+def FERImage(request):
+	return render(request,'FER/src/facial_expression_image.html')
+def FERWebcam(request):
+	return render(request,'FER/src/facial_expression_vedio.html')
+
 
 
 class IndexView(ListView):

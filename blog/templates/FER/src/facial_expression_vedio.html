@@ -1,0 +1,587 @@
+{% load staticfiles %}
+{% load blog_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'blog/img/apple-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'blog/img/ai5.png' %}">
+  <title>
+    人脸表情识别
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'blog/css/nucleo-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/black-dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/demo.css' %}">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"></script>
+</head>
+
+<body class="">
+  <div class="wrapper">
+    <div class="sidebar">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+    -->
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a href="javascript:void(0)" class="simple-text logo-mini">
+            AI
+          </a>
+          <a href="javascript:void(0)" class="simple-text logo-normal">
+            人脸表情识别
+          </a>
+        </div>
+        <ul class="nav">
+          <li>
+            <a href="{% url 'blog:FERImage' %}">
+              <i class="tim-icons icon-image-02"></i>
+              <p>照片识别</p>
+            </a>
+          </li>
+          <li class="active">
+            <a href="{% url 'blog:FERWebcam' %}">
+              <i class="tim-icons icon-video-66"></i>
+              <p>视频识别</p>
+            </a>
+          </li>
+          
+          <li class="active-pro">
+            <a href="./upgrade.html">
+              <i class="tim-icons icon-spaceship"></i>
+              <p>Upgrade to PRO</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+        <div class="container-fluid">
+          <div class="navbar-wrapper" >
+            <div class="navbar-toggle d-inline">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="javascript:void(0)">视频识别</a>
+          </div>
+
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="search-bar input-group">
+
+              <li class="separator d-lg-none"></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="container-fluid">
+          <div class="navbar-wrapper" >
+            <a class="navbar-brand" id="status" href="javascript:void(0)">模型加载中 ...</a>
+          </div>
+
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="search-bar input-group">
+
+              <li class="separator d-lg-none"></li>
+            </ul>
+          </div>
+        </div>
+
+      </nav>
+      <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="tim-icons icon-simple-remove"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card card-plain">
+              <div class="card-header">
+                Video image
+              </div>
+              <div class="card-body">
+                <div class="row">
+
+                <div class="col-md-6 pr-md-1" id="original_video">
+                </div>
+                <div class="col-md-6 pr-md-1" id="output_video">
+                </div>                  
+
+                </div>
+                <div class="inline" id='input'>
+
+<!--                   <center>
+                    <span id="original_video"></span>
+                  </center> -->
+                  <video id='video' width="550px"></video>
+                </div>
+                    
+                <div id = "thank">
+                  <center style="padding:10px; margin:5px">
+                      <div>点击  <a href='#'>Start Video </a> 开始 <a href="#" target="_top">视频识别</a></div>
+                  </center>
+                </div>
+
+                <div class="inline" id="output">
+        <!--        <center><span id="emotion_video"></span></center>-->
+                  <canvas id="canvas" src="" style=" margin-top:10px;" />
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-chart">
+              <div class="card-header" style="display:table-cell; text-align:center;">
+                <div class="row" style="display:inline-block;">
+                  <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                    <label class="btn btn-sm btn-primary btn-simple active" id="0" style="width: 175px;height: 50px;">
+                      <input type="radio" name="options" checked>
+                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block" id='start' onclick='startVideo()' style="font-size:25px;text-align:center; ">Start Video</span>
+
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="container-fluid">
+          <ul class="nav">
+
+          <div class="copyright">
+            <i class="tim-icons icon-istanbul"></i>  &nbsp;
+            <a href="javascript:void(0)" target="_blank">Ningbo University of Technology</a> 
+            </li>
+          </ul>
+          <div class="copyright">
+            ©
+            <script>
+              document.write(new Date().getFullYear())
+            </script> made by
+            <a href="javascript:void(0)" target="_blank">Judioljuse</a> for FER.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div class="fixed-plugin">
+    <div class="dropdown show-dropdown">
+      <a href="#" data-toggle="dropdown">
+        <i class="fa fa-cog fa-2x"> </i>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="header-title"> Sidebar Background</li>
+        <li class="adjustments-line">
+          <a href="javascript:void(0)" class="switch-trigger background-color">
+            <div class="badge-colors text-center">
+              <span class="badge filter badge-primary active" data-color="primary"></span>
+              <span class="badge filter badge-info" data-color="blue"></span>
+              <span class="badge filter badge-success" data-color="green"></span>
+            </div>
+            <div class="clearfix"></div>
+          </a>
+        </li>
+        <li class="adjustments-line text-center color-change">
+          <span class="color-label">LIGHT MODE</span>
+          <span class="badge light-badge mr-2"></span>
+          <span class="badge dark-badge ml-2"></span>
+          <span class="color-label">DARK MODE</span>
+        </li>
+        <li class="button-container">
+          <a href="#" target="_blank" class="btn btn-default btn-block btn-round">
+            Documentation
+          </a>
+        </li>
+        <li class="header-title">Thank you for visit !</li>
+        <li class="button-container text-center">
+          <br>
+          <br>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'blog/js/core/jquery.min.js' %}"></script>
+  <script src="{% static 'blog/js/core/popper.min.js' %}"></script>
+  <script src="{% static 'blog/js/core/bootstrap.min.js' %}"></script>
+
+  <script src="{% static 'blog/js/perfect-scrollbar.jquery.min.js' %}"></script>
+  <script src="{% static 'blog/js/chartjs.min.js' %}"></script>
+  <script src="{% static 'blog/js/bootstrap-notify.js' %}"></script>
+
+
+  <script src="{% static 'blog/js/black-dashboard.min.js' %}"></script>
+  <script src="{% static 'blog/js/demo.js' %}"></script>
+
+  <script>
+    $(document).ready(function() {
+      $().ready(function() {
+        $sidebar = $('.sidebar');
+        $navbar = $('.navbar');
+        $main_panel = $('.main-panel');
+
+        $full_page = $('.full-page');
+        $button = $('.btn-group btn-group-toggle float-right')
+        
+
+        $sidebar_responsive = $('body > .navbar-collapse');
+        sidebar_mini_active = true;
+        white_color = false;
+
+        window_width = $(window).width();
+
+        fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+
+
+        $('.fixed-plugin a').click(function(event) {
+          if ($(this).hasClass('switch-trigger')) {
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            } else if (window.event) {
+              window.event.cancelBubble = true;
+            }
+          }
+        });
+
+        $('.fixed-plugin .background-color span').click(function() {
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data', new_color);
+          }
+
+          if ($main_panel.length != 0) {
+            $main_panel.attr('data', new_color);
+          }
+
+          if ($full_page.length != 0) {
+            $full_page.attr('filter-color', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data', new_color);
+          }
+        });
+
+        $('.switch-sidebar-mini input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (sidebar_mini_active == true) {
+            $('body').removeClass('sidebar-mini');
+            sidebar_mini_active = false;
+            blackDashboard.showSidebarMessage('Sidebar mini deactivated...');
+          } else {
+            $('body').addClass('sidebar-mini');
+            sidebar_mini_active = true;
+            blackDashboard.showSidebarMessage('Sidebar mini activated...');
+          }
+
+          // we simulate the window Resize so the charts will get updated in realtime.
+          var simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 180);
+
+          // we stop the simulation of Window Resize after the animations are completed
+          setTimeout(function() {
+            clearInterval(simulateWindowResize);
+          }, 1000);
+        });
+
+        $('.switch-change-color input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (white_color == true) {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').removeClass('white-content');
+            }, 900);
+            white_color = false;
+          } else {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').addClass('white-content');
+            }, 900);
+
+            white_color = true;
+          }
+
+
+        });
+
+        $('.light-badge').click(function() {
+          $('body').addClass('white-content');
+        });
+
+        $('.dark-badge').click(function() {
+          $('body').removeClass('white-content');
+        });
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      demo.initGoogleMaps();
+    });
+  </script>
+<script>
+    // check using phone or not
+    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        alert('Sorry, this website not support mobile divices currently.');
+        history.back();
+    }
+
+    // check using chrome
+    if (!window.chrome) {
+        if (confirm('This website needs Chrome browser!!!')) {
+            closewin();
+        } else {
+            history.back();
+        }
+    }
+
+    var constraints = {
+        video: true
+    };
+
+    var $body = document.querySelector('body');
+    //    var status = document.getElementById('status');
+    var emotion_labels = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
+    var emotion_colors = ["#ff0000", "#00a800", "#ff4fc1", "#ffe100", "#306eff", "#ff9d00", "#7c7c7c"];
+    var offset_x = 15;
+    var offset_y = 40;
+
+    loadModel('https://raw.githubusercontent.com/kevinisbest/FrontEnd-EmotionDetection/master/models/mobilenetv1_models/model.json')
+    // create model
+    async function createModel(path) {
+        let model_tmp = await tf.loadModel(path)
+        return model_tmp
+    }
+
+    // load models
+    async function loadModel(path) {
+        var status = document.getElementById('status');
+        //        status.innerText = "Model Loading ..."
+        model = await createModel(path)
+
+        status.innerText = "模型已加载 !"
+    }
+
+
+    function createVideoElement() {
+        let $video = document.createElement('video')
+        $video.style.maxWidth = '100vw'
+        $video.style.width = '100vw'
+        $video.style.maxHeight = '0vh'
+        $body.appendChild($video)
+        return $video
+    }
+
+    function handleError(error) {
+        if (error.name === 'DevicesNotFoundError') {
+            alert('No camera detected. <br> Do you have any camera connected?');
+        } else if (error.name === 'NotAllowedError') {
+            alert('You have to allow camera access in order to run this experiment.');
+        } else if (navigator.userAgent.indexOf('Chrome') > -1) {
+            alert('Error. <br> Enable experimental features on chrome://flags/#enable-experimental-web-platform-features');
+        } else {
+            alert('Error. <br> Does your browser supports FaceDetector API?');
+        }
+        console.error(error)
+    }
+
+    function createCanvas(video) {
+
+        const canvas = document.getElementById('canvas')
+        const videoCompStyle = window.getComputedStyle(video)
+        canvas.width = videoCompStyle.width.replace('px', '')
+        canvas.height = videoCompStyle.height.replace('px', '')
+        //        canvas.style.display = 'none'
+        document.querySelector('#input').appendChild(canvas)
+
+        return canvas
+    }
+
+    function createDrawFunction() {
+
+        const faceDetector = new window.FaceDetector({
+            maxDetectedFaces: 3
+        })
+        let isDetectingFaces = false
+        let faces = []
+        let hideTimeout
+
+        return async function draw(canvas, video) {
+            window.requestAnimationFrame(() => draw(canvas, video))
+            const context = canvas.getContext('2d')
+            const videoCompStyle = window.getComputedStyle(video)
+            const videoWidth = videoCompStyle.width.replace('px', '')
+            const videoHeight = videoCompStyle.height.replace('px', '')
+            context.drawImage(video, 0, 0, videoWidth, videoHeight)
+            //            context.clearRect(0, 0, canvas.width, canvas.height);
+            //            clearTimeout(hideTimeout)
+            if (faces.length) {
+
+                //                let canvas = document.getElementById('canvas')
+                let ctx = context;
+                //                let scale = 1;
+
+                ctx.lineWidth = 4;
+                ctx.font = "20px Arial"
+                ctx.fillText('Result', 0, 0);
+                for (var i = 0; i < faces.length; i++) {
+                    ctx.beginPath();
+                    var item = faces[i].boundingBox;
+                    //                    console.log(item)
+                    let s_x = Math.floor(item.x - offset_x / 2);
+                    let s_y = Math.floor(item.y - offset_y / 2);
+                    let s_w = Math.floor(item.width + offset_x);
+                    let s_h = Math.floor(item.height + offset_y);
+
+                    let cT = ctx.getImageData(s_x, s_y, s_w, s_h);
+                    cT = preprocess(cT);
+                    z = model.predict(cT)
+
+                    let index = z.argMax(1).dataSync()[0]
+                    let label = emotion_labels[index];
+
+                    ctx.strokeStyle = emotion_colors[index];
+                    ctx.rect(s_x, s_y, s_w, s_h);
+                    ctx.stroke();
+                    ctx.fillStyle = emotion_colors[index];
+                    ctx.fillText(label, s_x, s_y);
+                    ctx.closePath();
+                }
+            } else {
+                console.log('NO FACE')
+                //                status.innerHTML = "NO FACE";
+            }
+
+            if (isDetectingFaces) {
+                return
+            }
+
+            isDetectingFaces = true
+            faces = await faceDetector.detect(canvas)
+            isDetectingFaces = false
+            var status = document.getElementById('status');
+            status.innerHTML = "模型运行中 ... ";
+        }
+    }
+
+    function preprocess(imgData) {
+        return tf.tidy(() => {
+            let tensor = tf.fromPixels(imgData).toFloat();
+
+            tensor = tensor.resizeBilinear([100, 100])
+
+            tensor = tf.cast(tensor, 'float32')
+            const offset = tf.scalar(255.0);
+            // Normalize the image 
+            const normalized = tensor.div(offset);
+            //We add a dimension to get a batch shape 
+            const batched = normalized.expandDims(0)
+            return batched
+        })
+    }
+
+
+    function playCameraOnVideo(video) {
+        return navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'user',
+                    frameRate: 60
+                },
+                audio: false
+            })
+            .then(srcObject => video.srcObject = srcObject)
+            .then(() => video.play())
+    }
+
+    async function main(video) {
+        const video_canvas = createCanvas(video)
+        const draw = createDrawFunction()
+        draw(video_canvas, video)
+    }
+
+    function startVideo() {
+        var x = document.getElementById("thank");
+        x.style.display = "none";
+        let elem = document.getElementById('start');
+        //elem.parentNode.removeChild(elem);
+        var status = document.getElementById('status');
+        status.innerHTML = "Initializing the camera ... ";
+
+        var ori = document.getElementById("original_video");
+        //        var emo = document.getElementById("emotion_video");
+        ori.innerHTML = "Original_video"
+        //        emo.innerHTML = "Result : "
+
+        var out = document.getElementById("output_video");
+        //        var emo = document.getElementById("emotion_video");
+        out.innerHTML = "output_video "
+
+
+        playCameraOnVideo(video)
+            .then(() => main(video))
+            .catch(handleError)
+
+    }
+</script>
+</body>
+
+</html>

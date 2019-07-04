@@ -1,0 +1,569 @@
+{% load staticfiles %}
+{% load blog_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'blog/img/apple-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'blog/img/ai5.png' %}">
+  <title>
+    人脸表情识别
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"></script>
+
+  <link rel="stylesheet" href="{% static 'blog/css/nucleo-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/black-dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/demo.css' %}">
+
+</head>
+
+<body class="">
+  <div class="wrapper">
+    <div class="sidebar">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+    -->
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a href="javascript:void(0)" class="simple-text logo-mini">
+            AI
+          </a>
+          <a href="javascript:void(0)" class="simple-text logo-normal">
+            人脸表情识别
+          </a>
+        </div>
+        <ul class="nav">
+          <li class="active">
+            <a href="{% url 'blog:FERImage' %}">
+              <i class="tim-icons icon-image-02"></i>
+              <p>照片识别</p>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'blog:FERWebcam' %}">
+              <i class="tim-icons icon-video-66"></i>
+              <p>视频识别</p>
+            </a>
+          </li>
+          
+          <li class="active-pro">
+            <a href="./upgrade.html">
+              <i class="tim-icons icon-spaceship"></i>
+              <p>Upgrade to PRO</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+        <div class="container-fluid">
+          <div class="navbar-wrapper" >
+            <div class="navbar-toggle d-inline">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="javascript:void(0)">照片识别</a>
+          </div>
+
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="search-bar input-group">
+
+              <li class="separator d-lg-none"></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="container-fluid">
+          <div class="navbar-wrapper" >
+            <a class="navbar-brand" id="status" href="javascript:void(0)">Model Loading ...</a>
+          </div>
+
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="search-bar input-group">
+
+              <li class="separator d-lg-none"></li>
+            </ul>
+          </div>
+        </div>
+
+      </nav>
+      <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="tim-icons icon-simple-remove"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Navbar -->
+      <div class="content">
+
+        <div class="row">
+          <div class="col-lg-6 col-md-12">
+            <div class="card card-tasks" >
+              <div class="card-header" >
+                <div>
+                <input id='uploadFile' class="form-control" type="file" accept="image/*" onchange="preview_image(event)">
+
+
+                </div>
+              </div>
+              <div class="card-body" >
+
+                  <div id="wrapper" class="inline">
+
+                      <img id="output_image" src="" style="max-width: 550px;max-height: 400px;"" />
+                  </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-lg-6 col-md-12">
+            <div class="card card-tasks" >
+              <div class="card-header ">
+                <div>
+                  <span id="result_emotion"></span>
+                
+                
+                <div class="dropdown">
+                  <button type="button" class="btn btn-link dropdown-toggle btn-icon" data-toggle="dropdown">
+                    <i class="tim-icons icon-settings-gear-63"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="#pablo">Download</a>
+                  </div>
+                </div>
+                </div>
+              </div>
+              <div class="card-body ">
+
+                <div class="inline">
+                    
+
+                    <canvas id="overlay" src="" style=" margin-top:10px;" />
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-chart">
+              <div class="card-header " style="display:table-cell; text-align:center;">
+                <div class="row" style="display:inline-block;">
+                  <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                    <label class="btn btn-sm btn-primary btn-simple active" id="0" style="width: 100px;height: 50px;">
+                      <input type="radio" name="options" checked>
+                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block" onclick="runModel()" style="font-size:25px;text-align:center; ">Run</span>
+
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <ul class="nav">
+
+          <div class="copyright">
+            <i class="tim-icons icon-istanbul"></i>  &nbsp;
+            <a href="javascript:void(0)" target="_blank">Ningbo University of Technology</a> 
+            </li>
+          </ul>
+          <div class="copyright">
+            ©
+            <script>
+              document.write(new Date().getFullYear())
+            </script> made by
+            <a href="javascript:void(0)" target="_blank">Judioljuse</a> for FER.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div class="fixed-plugin">
+    <div class="dropdown show-dropdown">
+      <a href="#" data-toggle="dropdown">
+        <i class="fa fa-cog fa-2x"> </i>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="header-title"> Sidebar Background</li>
+        <li class="adjustments-line">
+          <a href="javascript:void(0)" class="switch-trigger background-color">
+            <div class="badge-colors text-center">
+              <span class="badge filter badge-primary active" data-color="primary"></span>
+              <span class="badge filter badge-info" data-color="blue"></span>
+              <span class="badge filter badge-success" data-color="green"></span>
+            </div>
+            <div class="clearfix"></div>
+          </a>
+        </li>
+        <li class="adjustments-line text-center color-change">
+          <span class="color-label">LIGHT MODE</span>
+          <span class="badge light-badge mr-2"></span>
+          <span class="badge dark-badge ml-2"></span>
+          <span class="color-label">DARK MODE</span>
+        </li>
+        <li class="button-container">
+
+          <a href="#" target="_blank" class="btn btn-default btn-block btn-round">
+            Documentation
+          </a>
+        </li>
+        <li class="header-title">Thank you for visit !</li>
+        <li class="button-container text-center">
+
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'blog/js/core/jquery.min.js' %}"></script>
+  <script src="{% static 'blog/js/core/popper.min.js' %}"></script>
+  <script src="{% static 'blog/js/core/bootstrap.min.js' %}"></script>
+
+  <script src="{% static 'blog/js/perfect-scrollbar.jquery.min.js' %}"></script>
+  <script src="{% static 'blog/js/chartjs.min.js' %}"></script>
+  <script src="{% static 'blog/js/bootstrap-notify.js' %}"></script>
+
+  <script src="{% static 'blog/js/black-dashboard.min.js' %}"></script>
+  <script src="{% static 'blog/js/demo.js' %}"></script>
+
+
+
+
+  <script>
+    $(document).ready(function() {
+      $().ready(function() {
+        $sidebar = $('.sidebar');
+        $navbar = $('.navbar');
+        $main_panel = $('.main-panel');
+
+        $full_page = $('.full-page');
+
+        $sidebar_responsive = $('body > .navbar-collapse');
+        sidebar_mini_active = true;
+        white_color = false;
+
+        window_width = $(window).width();
+
+        fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+
+
+        $('.fixed-plugin a').click(function(event) {
+          if ($(this).hasClass('switch-trigger')) {
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            } else if (window.event) {
+              window.event.cancelBubble = true;
+            }
+          }
+        });
+
+        $('.fixed-plugin .background-color span').click(function() {
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data', new_color);
+          }
+
+          if ($main_panel.length != 0) {
+            $main_panel.attr('data', new_color);
+          }
+
+          if ($full_page.length != 0) {
+            $full_page.attr('filter-color', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data', new_color);
+          }
+        });
+
+        $('.switch-sidebar-mini input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (sidebar_mini_active == true) {
+            $('body').removeClass('sidebar-mini');
+            sidebar_mini_active = false;
+            blackDashboard.showSidebarMessage('Sidebar mini deactivated...');
+          } else {
+            $('body').addClass('sidebar-mini');
+            sidebar_mini_active = true;
+            blackDashboard.showSidebarMessage('Sidebar mini activated...');
+          }
+
+          // we simulate the window Resize so the charts will get updated in realtime.
+          var simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 180);
+
+          // we stop the simulation of Window Resize after the animations are completed
+          setTimeout(function() {
+            clearInterval(simulateWindowResize);
+          }, 1000);
+        });
+
+        $('.switch-change-color input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (white_color == true) {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').removeClass('white-content');
+            }, 900);
+            white_color = false;
+          } else {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').addClass('white-content');
+            }, 900);
+
+            white_color = true;
+          }
+
+
+        });
+
+        $('.light-badge').click(function() {
+          $('body').addClass('white-content');
+        });
+
+        $('.dark-badge').click(function() {
+          $('body').removeClass('white-content');
+        });
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      demo.initDashboardPageCharts();
+
+    });
+  </script>
+<script>
+    // check using phone or not
+    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        alert('Sorry, this website not support mobile divices currently.');
+        history.back();
+    }
+
+    // check using chrome
+    if (!window.chrome) {
+        if (confirm('This website needs Chrome browser!!!')) {
+            closewin();
+        } else {
+            history.back();
+        }
+    }
+
+    // check enable Experimental Web Platform features
+    if (window.FaceDetector == undefined) {
+        confirm('Please go to chrome://flags, and enable **Experimental Web Platform features**')
+        closewin();
+    }
+    // close window
+    function closewin() {
+        var win = window.open('', '_self', '');
+        win.close();
+    }
+
+    var cImg;
+    var model;
+    var emotion_labels = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
+    var emotion_colors = ["#ff0000", "#00a800", "#ff4fc1", "#ffe100", "#306eff", "#ff9d00", "#7c7c7c"];
+    let scoreThreshold = 0.5;
+    let minConfidence = 0.7;
+    let sizeType = 'lg';
+    var offset_x = 10;
+    var offset_y = 30;
+    loadModel('https://raw.githubusercontent.com/kevinisbest/FrontEnd-EmotionDetection/master/models/mobilenetv1_models/model.json')
+
+    // create model
+    async function createModel(path) {
+        let model_tmp = await tf.loadModel(path)
+        return model_tmp
+    }
+
+    // load models
+    async function loadModel(path) {
+        var lbl = document.getElementById("status");
+        lbl.innerText = "Model Loading ..."
+        model = await createModel(path)
+
+        lbl.innerText = "Model Loaded !"
+    }
+    // show seleted image
+    function preview_image(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('output_image');
+
+            output.src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+        var c1 = document.getElementById('output_image')
+        cImg = c1
+    }
+    // convert image to model input format
+    function preprocess(imgData) {
+        return tf.tidy(() => {
+            let tensor = tf.fromPixels(imgData).toFloat();
+
+            tensor = tensor.resizeBilinear([100, 100])
+
+            tensor = tf.cast(tensor, 'float32')
+            const offset = tf.scalar(255.0);
+            // Normalize the image 
+            const normalized = tensor.div(offset);
+            //We add a dimension to get a batch shape 
+            const batched = normalized.expandDims(0)
+            return batched
+        })
+    }
+    // use chrome face detector 
+    async function detect() {
+        if (window.FaceDetector == undefined) {
+            console.error('Face Detection not supported');
+            return;
+        }
+        var emo = document.getElementById("result_emotion");
+        emo.innerHTML = " Waiting... "
+        var faceDetector = new FaceDetector();
+
+        var inputImgEl = document.getElementById("output_image")
+        const {
+            width,
+            height
+        } = inputImgEl
+        //        console.log(width, height)
+        let out_canvas = document.getElementById('overlay');
+        out_canvas.width = width
+        out_canvas.height = height
+        let ctx = out_canvas.getContext("2d");
+        let scale = 1;
+        ctx.drawImage(inputImgEl,
+            0, 0, inputImgEl.naturalWidth, inputImgEl.naturalHeight,
+            0, 0, out_canvas.width, out_canvas.height);
+
+        scale = out_canvas.width / inputImgEl.naturalWidth;
+
+        console.time('detect');
+        return faceDetector.detect(inputImgEl)
+            .then(faces => {
+                //                console.log(faces);
+                // Draw the faces on the <canvas>.
+
+                EmotionClassify(faces, scale)
+
+                console.timeEnd('detect');
+            })
+            .catch((e) => {
+                console.error("Boo, Face Detection failed: " + e);
+            });
+    }
+    // recognize cropped images
+    function EmotionClassify(faces, scale) {
+        var emo = document.getElementById("result_emotion");
+        if (faces.length != 0) {
+            let out_canvas = document.getElementById('overlay');
+            let ctx = out_canvas.getContext("2d");
+            ctx.lineWidth = 2;
+            ctx.font = "15px Arial"
+            for (var i = 0; i < faces.length; i++) {
+                var item = faces[i].boundingBox;
+                ctx.beginPath();
+                let s_x = Math.floor((item.x - offset_x / 2) * scale);
+                let s_y = Math.floor((item.y - offset_y / 2) * scale);
+                let s_w = Math.floor((item.width + offset_x) * scale);
+                let s_h = Math.floor((item.height + offset_y) * scale);
+
+                //                    let face = document.createElement('canvas');
+                let cT = out_canvas.getContext("2d").getImageData(s_x, s_y, s_w, s_h);
+                //                    cT.drawImage(inputImgEl, s_x, s_y, s_w, s_h, 0, 0, s_w, s_h)
+                //                console.log(cT)
+                cT = preprocess(cT);
+                z = model.predict(cT)
+                let index = z.argMax(1).dataSync()[0]
+                let label = emotion_labels[index];
+                //                console.log(label)
+                ctx.strokeStyle = emotion_colors[index];
+                ctx.rect(s_x, s_y, s_w, s_h);
+                ctx.stroke();
+                ctx.fillStyle = emotion_colors[index];
+                ctx.fillText(label, s_x, s_y);
+                ctx.closePath();
+            }
+            emo.innerHTML = "Result :  Done !!!"
+        } else {
+            console.log('NO FACE')
+            emo.innerHTML = "Result :  NO FACE !!!"
+        }
+
+    }
+
+
+    async function runModel() {
+        console.log(cImg)
+        if (cImg) {
+            let cT = preprocess(cImg)
+            await detect()
+        } else {
+            alert('Please select an image file')
+        }
+    }
+</script>
+
+</body>
+
+</html>
