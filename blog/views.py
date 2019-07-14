@@ -56,6 +56,8 @@ def FERImage(request):
 	return render(request,'FER/src/facial_expression_image.html')
 def FERWebcam(request):
 	return render(request,'FER/src/facial_expression_vedio.html')
+def FERIntroduction(request):
+	return render(request,'FER/src/Introduction.html')
 
 
 

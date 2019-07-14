@@ -1,0 +1,604 @@
+{% load staticfiles %}
+{% load blog_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'blog/img/apple-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'blog/img/ai5.png' %}">
+  <title>
+    人脸表情识别
+  </title>
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link rel="stylesheet" href="{% static 'blog/css/nucleo-icons.css' %}">
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="{% static 'blog/css/black-dashboard.min.css' %}">
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link rel="stylesheet" href="{% static 'blog/css/demo.css' %}">
+</head>
+
+<body class="">
+  <div class="wrapper">
+
+    <div class="sidebar">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+    -->
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a href="javascript:void(0)" class="simple-text logo-mini">
+            AI
+          </a>
+          <a href="javascript:void(0)" class="simple-text logo-normal">
+            人脸表情识别平台
+          </a>
+        </div>
+        <ul class="nav">
+          <li>
+            <a href="{% url 'blog:FERImage' %}">
+              <i class="tim-icons icon-image-02"></i>
+              <p>照片识别</p>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'blog:FERWebcam' %}">
+              <i class="tim-icons icon-video-66"></i>
+              <p>视频识别</p>
+            </a>
+          </li>
+          <li class="active">
+            <a href="{% url 'blog:FERIntroduction' %}">
+              <i class="tim-icons icon-book-bookmark"></i>
+              <p>平台介绍</p>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+        <div class="container-fluid">
+          <div class="navbar-wrapper" >
+            <div class="navbar-toggle d-inline">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="javascript:void(0)">平台介绍</a>
+          </div>
+
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="search-bar input-group">
+
+              <li class="separator d-lg-none"></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="container-fluid">
+          <div class="navbar-wrapper" >
+            <a class="navbar-brand" id="status" href="javascript:void(0)">&nbsp &nbsp</a>
+          </div>
+
+
+
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="search-bar input-group">
+
+              <li class="separator d-lg-none"></li>
+            </ul>
+          </div>
+        </div>
+
+      </nav>
+      <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="tim-icons icon-simple-remove"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-category">Platform use</h5>
+                <h3 class="card-title">平台使用</h3>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <ul class="nav nav-pills nav-pills-primary flex-column">
+                      <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#requirement" style="padding:15px 23px">
+                          使用前置
+                        </a>
+                      </li>
+                      <br>
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#image" style="padding:15px 23px">
+                          照片识别
+                        </a>
+                      </li>
+                      <br>
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#webcam" style="padding:15px 23px">
+                          视频识别
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="tab-content">
+                      <div class="tab-pane active" id="requirement">
+                        <ol>
+                          <li>请使用chrome浏览器进行访问.</li>
+                          <br>
+                          <li>访问
+                          <a href="chrome://flags/#enable-experimental-web-platform-features" target="_blank">chrome://flags/#enable-experimental-web-platform-features</a> </li>
+                          <br>
+                          <img src="{% static 'blog/img/chrome-setting.png' %}" alt="Thumbnail Image" class="rounded img-raised">
+                          <br>
+                          <br>
+                          <li>点击<a href="javascript:void(0)" target="_blank">Enabled</a>后，重启浏览器</li>
+
+                        </ol>
+
+                      </div>
+                      <div class="tab-pane" id="image">
+                        <ol>
+                          <li>访问页面
+                          <a href="{% url 'blog:FERImage' %}" target="_blank">onesmallstep.ink/FERImage</a> </li>
+                          <br>
+                          <li>等待模型加载完成</li>
+                          <br>
+                          <br>
+                          <img src="{% static 'blog/img/load_model.png' %}" alt="Thumbnail Image" class="rounded img-raised" style="width: 400px">
+                          <br>
+                          <br>
+                          <li>选择从本地选择或从服务器上传</li>
+                          <br>
+                          <p>本地上传</p>
+                          <img src="{% static 'blog/img/local.png' %}" alt="Thumbnail Image" class="rounded img-raised" style="width: 400px">
+                          <br>
+                          <br>
+                          <p>从服务器上传</p>
+                          <img src="{% static 'blog/img/web.png' %}" alt="Thumbnail Image" class="rounded img-raised" style="width: 400px">
+                          <br>
+                          <br>
+                          <li>点击<a href="javascript:void(0)" target="_blank">Run</a>按钮</li>
+
+                        </ol>
+                      </div>
+                      <div class="tab-pane" id="webcam">
+                        <ol>
+                          <li>访问页面
+                          <a href="{% url 'blog:FERWebcam' %}" target="_blank">onesmallstep.ink/FERWebcam</a> </li>
+                          <br>
+                          <li>等待模型加载完成</li>
+                          <br>
+                          <img src="{% static 'blog/img/load_model2.png' %}" alt="Thumbnail Image" class="rounded img-raised">
+                          <br>
+                          <br>
+                          <li>点击<a href="javascript:void(0)" target="_blank">Srart Vedio</a>，开始视频识别</li>
+
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-category">Model introduction </h5>
+                <h3 class="card-title"> 模型介绍 </h3>
+              </div>
+              <div id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
+                <div class="card card-plain">
+                  <div class="card-header" id="headingOne">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="text-primary">
+                      训练数据
+                      <i class="tim-icons icon-minimal-down"></i>
+                    </a>
+                  </div>
+                  <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="card-body">
+                      <p>该数据集为fer2013</p>
+                      <p >
+                      Fer2013人脸表情数据集由35886张人脸表情图片组成，其中每张图片是由大小固定为48×48的灰度图像组成，共有7种表情，分别对应于数字标签0-6，具体表情对应的标签和中英文如下：0 anger 生气； 1 disgust 厌恶； 2 fear 恐惧； 3 happy 开心； 4 sad 伤心；5 surprised 惊讶； 6 normal 中性。
+                      </p>
+                      <br>
+                      <p>数据集划分</p>
+                      <p style="text-indent:2em;">Training_data:28708张<p>
+                      <p style="text-indent:2em;">Validation_data:3589张<p>
+                      <p style="text-indent:2em;">Testing_data:3589张<p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card card-plain">
+                  <div class="card-header" id="headingTwo">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" class="text-primary">
+                      网络结构
+                      <i class="tim-icons icon-minimal-down"></i>
+                    </a>
+                  </div>
+                  <div id="collapseTwo" class="collapse show" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="card-body">
+                      <img src="{% static 'blog/img/jiegou.png' %}" alt="Thumbnail Image" class="rounded img-raised">
+                      <br>
+                      <br>
+                      <p>Total params: 58,423</p>
+                      <p>Trainable params: 56,951</p>
+                      <p>Non-trainable params: 1,472</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card card-plain">
+                  <div class="card-header" id="headingThree">
+                    <a class="text-primary" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" >
+                      训练过程
+                      <i class="tim-icons icon-minimal-down"></i>
+                    </a>
+                  </div>
+                  <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="card-body">
+                      <p>batch_size = 32</p>
+                      <p>num_epochs = 10000</p>
+                      <p>input_shape = (64, 64, 1)</p>
+                      <p>validation_split = .2</p>
+
+                      <p>optimizer='adam'</p>
+                      <p>metrics=['accuracy']</p>
+                      <p>loss='categorical_crossentropy'</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8 ml-auto mr-auto">
+            <div class="card card-subcategories card-plain">
+              <div class="card-header">
+                <h4 class="card-title text-center mt-5">Ningbo University of Technology </h4>
+                <br />
+              </div>
+              <div class="card-body">
+                <!--
+                                color-classes: "nav-pills-primary", "nav-pills-info", "nav-pills-success", "nav-pills-warning","nav-pills-danger"
+                                -->
+                <ul class="nav nav-pills nav-pills-primary nav-pills-icons justify-content-center">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="http://www.nbut.cn/" target="_blank">
+                      <i class="tim-icons icon-istanbul"></i> Home
+                    </a>
+                  </li>
+                </ul>
+                <div class="tab-content tab-space tab-subcategories">
+                  <div class="tab-pane active" id="link7">
+                    <center>Ningbo University of Technology, Address: No. 201, Fenghua Road, Jiangbei District</center>
+                    <br>
+                    <center>Ningbo, Zhejiang, 315211</center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <ul class="nav">
+
+          <div class="copyright">
+            <i class="tim-icons icon-istanbul"></i>  &nbsp;
+            <a href="javascript:void(0)" target="_blank">Ningbo University of Technology</a> 
+            </li>
+          </ul>
+          <div class="copyright">
+            ©
+            <script>
+              document.write(new Date().getFullYear())
+            </script> made by
+            <a href="javascript:void(0)" target="_blank">Judioljuse</a> for FER.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div class="fixed-plugin">
+    <div class="dropdown show-dropdown">
+      <a href="#" data-toggle="dropdown">
+        <i class="fa fa-cog fa-2x"> </i>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="header-title"> Sidebar Background</li>
+        <li class="adjustments-line">
+          <a href="javascript:void(0)" class="switch-trigger background-color">
+            <div class="badge-colors text-center">
+              <span class="badge filter badge-primary active" data-color="primary"></span>
+              <span class="badge filter badge-info" data-color="blue"></span>
+              <span class="badge filter badge-success" data-color="green"></span>
+              <span class="badge filter badge-warning" data-color="orange"></span>
+              <span class="badge filter badge-danger" data-color="red"></span>
+            </div>
+            <div class="clearfix"></div>
+          </a>
+        </li>
+        <li class="adjustments-line text-center color-change">
+          <span class="color-label">LIGHT MODE</span>
+          <span class="badge light-badge mr-2"></span>
+          <span class="badge dark-badge ml-2"></span>
+          <span class="color-label">DARK MODE</span>
+        </li>
+        <br>
+        <br>
+        <li class="button-container">
+
+          <a href="#" target="_blank" class="btn btn-default btn-block btn-round">
+            Documentation
+          </a>
+        </li>
+        <li class="header-title">Thank you for visit !</li>
+        <li class="button-container text-center">
+
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'blog/js/core/jquery.min.js' %}"></script>
+  <script src="{% static 'blog/js/core/popper.min.js' %}"></script>
+  <script src="{% static 'blog/js/core/bootstrap.min.js' %}"></script>
+
+  <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-46172202-12');
+  </script>
+  <script>
+    $(document).ready(function() {
+
+
+      $('#facebook').sharrre({
+        share: {
+          facebook: true
+        },
+        enableHover: false,
+        enableTracking: false,
+        enableCounter: false,
+        click: function(api, options) {
+          api.simulateClick();
+          api.openPopup('facebook');
+        },
+        template: '<i class="fab fa-facebook-f"></i> Facebook',
+        url: 'https://demos.creative-tim.com/black-dashboard-pro/examples/dashboard.html'
+      });
+
+      $('#google').sharrre({
+        share: {
+          googlePlus: true
+        },
+        enableCounter: false,
+        enableHover: false,
+        enableTracking: true,
+        click: function(api, options) {
+          api.simulateClick();
+          api.openPopup('googlePlus');
+        },
+        template: '<i class="fab fa-google-plus"></i> Google',
+        url: 'https://demos.creative-tim.com/black-dashboard-pro/examples/dashboard.html'
+      });
+
+      $('#twitter').sharrre({
+        share: {
+          twitter: true
+        },
+        enableHover: false,
+        enableTracking: false,
+        enableCounter: false,
+        buttons: {
+          twitter: {
+            via: 'CreativeTim'
+          }
+        },
+        click: function(api, options) {
+          api.simulateClick();
+          api.openPopup('twitter');
+        },
+        template: '<i class="fab fa-twitter"></i> Twitter',
+        url: 'https://demos.creative-tim.com/black-dashboard-pro/examples/dashboard.html'
+      });
+
+
+
+      // Facebook Pixel Code Don't Delete
+      ! function(f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function() {
+          n.callMethod ?
+            n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+      }(window,
+        document, 'script', '//connect.facebook.net/en_US/fbevents.js');
+
+      try {
+        fbq('init', '111649226022273');
+        fbq('track', "PageView");
+
+      } catch (err) {
+        console.log('Facebook Track Error:', err);
+      }
+
+
+
+
+
+
+    });
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=111649226022273&ev=PageView&noscript=1" />
+  </noscript>
+  <script>
+    $(document).ready(function() {
+      $().ready(function() {
+        $sidebar = $('.sidebar');
+        $navbar = $('.navbar');
+        $main_panel = $('.main-panel');
+
+        $full_page = $('.full-page');
+
+        $sidebar_responsive = $('body > .navbar-collapse');
+        sidebar_mini_active = true;
+        white_color = false;
+
+        window_width = $(window).width();
+
+        fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+
+
+        $('.fixed-plugin a').click(function(event) {
+          if ($(this).hasClass('switch-trigger')) {
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            } else if (window.event) {
+              window.event.cancelBubble = true;
+            }
+          }
+        });
+
+        $('.fixed-plugin .background-color span').click(function() {
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data', new_color);
+          }
+
+          if ($main_panel.length != 0) {
+            $main_panel.attr('data', new_color);
+          }
+
+          if ($full_page.length != 0) {
+            $full_page.attr('filter-color', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data', new_color);
+          }
+        });
+
+        $('.switch-sidebar-mini input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (sidebar_mini_active == true) {
+            $('body').removeClass('sidebar-mini');
+            sidebar_mini_active = false;
+            blackDashboard.showSidebarMessage('Sidebar mini deactivated...');
+          } else {
+            $('body').addClass('sidebar-mini');
+            sidebar_mini_active = true;
+            blackDashboard.showSidebarMessage('Sidebar mini activated...');
+          }
+
+          // we simulate the window Resize so the charts will get updated in realtime.
+          var simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 180);
+
+          // we stop the simulation of Window Resize after the animations are completed
+          setTimeout(function() {
+            clearInterval(simulateWindowResize);
+          }, 1000);
+        });
+
+        $('.switch-change-color input').on("switchChange.bootstrapSwitch", function() {
+          var $btn = $(this);
+
+          if (white_color == true) {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').removeClass('white-content');
+            }, 900);
+            white_color = false;
+          } else {
+
+            $('body').addClass('change-background');
+            setTimeout(function() {
+              $('body').removeClass('change-background');
+              $('body').addClass('white-content');
+            }, 900);
+
+            white_color = true;
+          }
+
+
+        });
+
+        $('.light-badge').click(function() {
+          $('body').addClass('white-content');
+        });
+
+        $('.dark-badge').click(function() {
+          $('body').removeClass('white-content');
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

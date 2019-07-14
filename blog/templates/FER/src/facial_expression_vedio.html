@@ -18,7 +18,7 @@
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
   <link rel="stylesheet" href="{% static 'blog/css/nucleo-icons.css' %}">
-  <link rel="stylesheet" href="{% static 'blog/css/black-dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/black-dashboard.min.css' %}">
   <link rel="stylesheet" href="{% static 'blog/css/demo.css' %}">
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"></script>
@@ -27,9 +27,7 @@
 <body class="">
   <div class="wrapper">
     <div class="sidebar">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
-    -->
+
       <div class="sidebar-wrapper">
         <div class="logo">
           <a href="javascript:void(0)" class="simple-text logo-mini">
@@ -52,13 +50,13 @@
               <p>视频识别</p>
             </a>
           </li>
-          
-          <li class="active-pro">
-            <a href="./upgrade.html">
-              <i class="tim-icons icon-spaceship"></i>
-              <p>Upgrade to PRO</p>
+          <li>
+            <a href="{% url 'blog:FERIntroduction' %}">
+              <i class="tim-icons icon-book-bookmark"></i>
+              <p>平台介绍</p>
             </a>
           </li>
+          
         </ul>
       </div>
     </div>
@@ -94,15 +92,10 @@
 
         <div class="container-fluid">
           <div class="navbar-wrapper" >
-            <a class="navbar-brand" id="status" href="javascript:void(0)">模型加载中 ...</a>
+            <a class="navbar-brand" id="status" href="javascript:void(0)"></a>
           </div>
 
 
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-          </button>
           <div class="collapse navbar-collapse" id="navigation">
             <ul class="navbar-nav ml-auto">
               <li class="search-bar input-group">
@@ -218,6 +211,8 @@
               <span class="badge filter badge-primary active" data-color="primary"></span>
               <span class="badge filter badge-info" data-color="blue"></span>
               <span class="badge filter badge-success" data-color="green"></span>
+              <span class="badge filter badge-warning" data-color="orange"></span>
+              <span class="badge filter badge-danger" data-color="red"></span>
             </div>
             <div class="clearfix"></div>
           </a>
@@ -405,7 +400,7 @@
     var offset_x = 15;
     var offset_y = 40;
 
-    loadModel('https://raw.githubusercontent.com/kevinisbest/FrontEnd-EmotionDetection/master/models/mobilenetv1_models/model.json')
+    loadModel('../../../static/blog/models/mobilenetv1_models/model.json')
     // create model
     async function createModel(path) {
         let model_tmp = await tf.loadModel(path)
@@ -415,10 +410,10 @@
     // load models
     async function loadModel(path) {
         var status = document.getElementById('status');
-        //        status.innerText = "Model Loading ..."
+        status.innerText = "模型加载中 ..."
         model = await createModel(path)
 
-        status.innerText = "模型已加载 !"
+        status.innerText = "模型加载完成 ！"
     }
 
 
@@ -519,7 +514,7 @@
             faces = await faceDetector.detect(canvas)
             isDetectingFaces = false
             var status = document.getElementById('status');
-            status.innerHTML = "模型运行中 ... ";
+            status.innerHTML = "Running the model ";
         }
     }
 

@@ -19,19 +19,20 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"></script>
+  <!-- <script src="{% static 'blog/js/open-cv/opencv.js' %}"></script>
+  <script src="https://docs.opencv.org/master/utils.js"></script> -->
 
   <link rel="stylesheet" href="{% static 'blog/css/nucleo-icons.css' %}">
-  <link rel="stylesheet" href="{% static 'blog/css/black-dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/black-dashboard.min.css' %}">
   <link rel="stylesheet" href="{% static 'blog/css/demo.css' %}">
 
 </head>
 
 <body class="">
   <div class="wrapper">
+
     <div class="sidebar">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
-    -->
+
       <div class="sidebar-wrapper">
         <div class="logo">
           <a href="javascript:void(0)" class="simple-text logo-mini">
@@ -54,13 +55,13 @@
               <p>视频识别</p>
             </a>
           </li>
-          
-          <li class="active-pro">
-            <a href="./upgrade.html">
-              <i class="tim-icons icon-spaceship"></i>
-              <p>Upgrade to PRO</p>
+          <li>
+            <a href="{% url 'blog:FERIntroduction' %}">
+              <i class="tim-icons icon-book-bookmark"></i>
+              <p>平台介绍</p>
             </a>
           </li>
+          
         </ul>
       </div>
     </div>
@@ -100,11 +101,6 @@
           </div>
 
 
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-          </button>
           <div class="collapse navbar-collapse" id="navigation">
             <ul class="navbar-nav ml-auto">
               <li class="search-bar input-group">
@@ -135,8 +131,86 @@
             <div class="card card-tasks" >
               <div class="card-header" >
                 <div>
-                <input id='uploadFile' class="form-control" type="file" accept="image/*" onchange="preview_image(event)">
+                  <div class="row">
+                    <div class="col-lg-8">
+                      <input id='uploadFile' class="form-control" type="file" accept="image/*" onchange="preview_image(event)">
+                    </div>
 
+                    <div class="col-md-4 ml-auto">
+                      <button class="btn btn-simple btn-twitter" data-toggle="modal" data-target="#noticeModal" style="height: 35px;">
+                        从服务器挑选
+                      </button>
+
+                      <!-- notice modal -->
+                      <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-notice">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                <i class="tim-icons icon-simple-remove"></i>
+                              </button>
+                              <h5 class="modal-title" id="myModalLabel">点击图片选取一张</h5>
+                            </div>
+                            <div class="modal-body">
+                              <div class="instruction">
+                                <div class="row">
+                                  <div class="col-md-4">
+                                    <div class="picture">
+                                      <img src="{% static 'blog/img/emilyz.jpg' %}" alt="Thumbnail Image" class="rounded img-raised">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="picture">
+                                      <img src="{% static 'blog/img/mike.jpg' %}" alt="Thumbnail Image" class="rounded img-raised">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="picture">
+                                      <img src="{% static 'blog/img/james.jpg' %}" alt="Thumbnail Image" class="rounded img-raised">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="instruction">
+                                <div class="row">
+                                  <strong>&nbsp; &nbsp; &nbsp;</strong>
+                                </div>
+                              </div>
+                              <div class="instruction">
+                                <div class="row">
+                                  <div class="col-md-4">
+                                    <div class="picture">
+                                      <img src="{% static 'blog/img/conference.jpg' %}" alt="Thumbnail Image" class="rounded img-raised">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="picture">
+                                      <img src="{% static 'blog/img/12_Angry_Men.jpg' %}" alt="Thumbnail Image" class="rounded img-raised">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="picture">
+                                      <img src="{% static 'blog/img/The-Beatles.jpg' %}" alt="Thumbnail Image" class="rounded img-raised">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="instruction">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <strong>2. Ps</strong>
+                                    <p class="description">You can upload photos from the local, you can also choose a photo from the <a href="javascript:void(0)">server</a>, if you do not want to reveal personal privacy or inconvenient to upload
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <!-- end notice modal -->
+                    </div>
+                  </div>
 
                 </div>
               </div>
@@ -144,7 +218,7 @@
 
                   <div id="wrapper" class="inline">
 
-                      <img id="output_image" src="" style="max-width: 550px;max-height: 400px;"" />
+                      <img id="output_image" src="" style="max-width: 550px;max-height: 400px;"/>
                   </div>
 
               </div>
@@ -165,7 +239,7 @@
                     <i class="tim-icons icon-settings-gear-63"></i>
                   </button>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#pablo">Download</a>
+                    <a class="dropdown-item" href="#pablo">右键图片另存为</a>
                   </div>
                 </div>
                 </div>
@@ -188,12 +262,15 @@
             <div class="card card-chart">
               <div class="card-header " style="display:table-cell; text-align:center;">
                 <div class="row" style="display:inline-block;">
-                  <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                    <label class="btn btn-sm btn-primary btn-simple active" id="0" style="width: 100px;height: 50px;">
-                      <input type="radio" name="options" checked>
-                      <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block" onclick="runModel()" style="font-size:25px;text-align:center; ">Run</span>
 
+
+                  <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                    <label class="btn btn-sm btn-primary btn-simple active" id="0" style="width: 100px;height: 50px;" onclick="runModel()">
+                      <input type="radio" name="options" checked>
+                      <span  style="font-size:25px;text-align:center; ">Run</span>
                     </label>
+
+
                   </div>
                 </div>
               </div>
@@ -235,6 +312,8 @@
               <span class="badge filter badge-primary active" data-color="primary"></span>
               <span class="badge filter badge-info" data-color="blue"></span>
               <span class="badge filter badge-success" data-color="green"></span>
+              <span class="badge filter badge-warning" data-color="orange"></span>
+              <span class="badge filter badge-danger" data-color="red"></span>
             </div>
             <div class="clearfix"></div>
           </a>
@@ -245,6 +324,8 @@
           <span class="badge dark-badge ml-2"></span>
           <span class="color-label">DARK MODE</span>
         </li>
+        <br>
+        <br>
         <li class="button-container">
 
           <a href="#" target="_blank" class="btn btn-default btn-block btn-round">
@@ -420,6 +501,7 @@
 
     var cImg;
     var model;
+    var detection_model;
     var emotion_labels = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
     var emotion_colors = ["#ff0000", "#00a800", "#ff4fc1", "#ffe100", "#306eff", "#ff9d00", "#7c7c7c"];
     let scoreThreshold = 0.5;
@@ -427,7 +509,13 @@
     let sizeType = 'lg';
     var offset_x = 10;
     var offset_y = 30;
-    loadModel('https://raw.githubusercontent.com/kevinisbest/FrontEnd-EmotionDetection/master/models/mobilenetv1_models/model.json')
+
+    //load_detection_Model("../../../static/blog/js/open-cv/haarcascade_frontalface_default.xml")
+
+    //loadModel('https://raw.githubusercontent.com/kevinisbest/FrontEnd-EmotionDetection/master/models/mobilenetv1_models/model.json')
+    loadModel('../../../static/blog/models/mobilenetv1_models/model.json')
+
+
 
     // create model
     async function createModel(path) {
@@ -435,15 +523,36 @@
         return model_tmp
     }
 
+    async function create_detection_Model(path) {
+        let model_tmp = new cv.CascadeClassifier();
+        let utils = new Utils('errorMessage');
+
+        utils.createFileFromUrl(path, path, () => {
+            model_tmp.load(path); // in the callback, load the cascade from file 
+        });
+        //model_tmp.load(path)
+        return model_tmp
+    }
+
     // load models
     async function loadModel(path) {
         var lbl = document.getElementById("status");
-        lbl.innerText = "Model Loading ..."
+        lbl.innerText = "模型加载中 ..."
         model = await createModel(path)
 
-        lbl.innerText = "Model Loaded !"
+        lbl.innerText = "模型加载完成 !"
+    }
+
+    async function load_detection_Model(path) {
+        var lbl = document.getElementById("status");
+        lbl.innerText = "Loading Detection Model ..."
+        detection_model = await create_detection_Model(path)
+
+        lbl.innerText = "Detection Model Loaded !"
+
     }
     // show seleted image
+
     function preview_image(event) {
         var reader = new FileReader();
         reader.onload = function() {
@@ -455,6 +564,8 @@
         var c1 = document.getElementById('output_image')
         cImg = c1
     }
+
+
     // convert image to model input format
     function preprocess(imgData) {
         return tf.tidy(() => {
@@ -471,6 +582,8 @@
             return batched
         })
     }
+
+
     // use chrome face detector 
     async function detect() {
         if (window.FaceDetector == undefined) {
@@ -563,6 +676,22 @@
         }
     }
 </script>
+
+<script type="application/javascript">
+    $('#noticeModal').on('shown.bs.modal', function () {
+        $('#myInput').focus()
+    })
+    $(".img-raised").click(function () {
+        var img = $(this).attr('src');
+        var output = document.getElementById('output_image');
+        var c1 = document.getElementById('output_image')
+        output.src = img;
+        cImg = c1
+        $('#noticeModal').modal('hide');
+        return false;
+    })
+</script>
+
 
 </body>
 

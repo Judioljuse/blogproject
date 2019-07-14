@@ -10,4 +10,5 @@ urlpatterns = [
 	path(r'tag/<int:pk>/',views.TagView.as_view(),name='tag'),
 	path(r'FERImage/',views.FERImage,name='FERImage'),
 	path(r'FERWebcam/',views.FERWebcam,name='FERWebcam'),
+	path(r'FERIntroduction/',views.FERIntroduction,name='FERIntroduction'),
 	]
